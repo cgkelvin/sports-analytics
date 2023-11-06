@@ -63,10 +63,10 @@ coach_name
 
 from nba_api.stats.endpoints import playoffpicture
 
-# Create an instance of the PlayoffPicture object
+
 playoff_picture = playoffpicture.PlayoffPicture(season_id='22005')
 
-# Call the get_data_frames method to retrieve the data frames
+
 data = pd.DataFrame(columns=['East Wins', 'East Team'])
 playoff_picture = playoffpicture.PlayoffPicture(season_id=22021)
 playoff_picture_east_df = playoff_picture.east_conf_standings.get_data_frame()
@@ -84,7 +84,7 @@ data = pd.concat([data, data_df])
 data
 
 
-# Now, data_frames contains the data frames with the playoff picture data[]
+
 
 data = []
 data.append([teams, wins])
@@ -98,7 +98,6 @@ for season in range(2005, 2024):
 import pandas as pd
 from nba_api.stats.endpoints import playoffpicture
 
-# Initialize an empty DataFrame to store the data
 playoff_picture_df = pd.DataFrame(columns=['Season', 'Team', 'Team ID', 'Wins', 'Losses', 'Win PCT', 'Clinched'])
 
 for season in range(2005, 2024):
@@ -138,22 +137,87 @@ for season in range(2005, 2024):
         'Losses': west_team_losses,
         'Win PCT': west_team_pct,
         'Clinched Playoffs': west_team_clinched_playoffs,
-        'Clinched Conference': west_team_clinched_conference,
-        'Clinched '
+        'Clinched Conference': west_team_clinched_conference
     })
     
-    # Concatenate East and West DataFrames vertically
     playoff_picture_df = pd.concat([playoff_picture_df, east_df, west_df])
 
-# Reset index if needed
 playoff_picture_df.reset_index(drop=True, inplace=True)
 
-# Display the final DataFrame
 print(playoff_picture_df)
 
 playoff_picture_east_df = playoff_picture.get_data_frames()
 data = pd.DataFrame(playoff_picture_east_df)
 
+
+
+
+
 from nba_api.stats.endpoints import playoffpicture
+import pandas as pd
+playoff_picture = playoffpicture.PlayoffPicture(season_id='22019')
 WestConfPlayoffPicture_df = playoff_picture.west_conf_playoff_picture.get_data_frame()
-WestConfPlayoffPicture_df['HIGH_SEED_RANK']
+high = WestConfPlayoffPicture_df['HIGH_SEED_RANK']
+low = WestConfPlayoffPicture_df['LOW_SEED_RANK']
+
+seed = pd.concat([high, low])
+seed
+
+from nba_api.stats.endpoints import teamdetails
+from nba_api.stats.static import teams
+teams = teams.get_teams()
+data = []
+team_id = [team['id'] for team in teams]
+
+champ = teamdetails.TeamDetails(team_id = 1610612761)
+champ_df = champ.team_awards_championships.get_data_frame()
+data = champ_df['YEARAWARDED']
+
+df = pd.DataFrame(data)
+df
+
+data = []
+for season in range(2005, 2024):
+    for id in team_id:
+        champ = teamdetails.TeamDetails(team_id=id)
+        champ_df = champ.team_awards_championships.get_data_frame()
+        
+        if not champ_df.empty:
+            year_won = champ_df['YEARAWARDED'].iloc[0]
+            if year_won == season:
+                won = 1
+            else:
+                won = 0
+        
+        data.append([id, season, won])
+
+title_df = pd.DataFrame(data, columns=['Team ID', 'Season', 'Won Title'])
+data_df
+
+
+team_info[0]['id']
+data=[]
+champ = teamdetails.TeamDetails(team_id=1610612748)
+champ_df = champ.team_awards_championships.get_data_frame()
+champ_df
+years = champ_df['YEARAWARDED']
+
+data.append([1610612748, years])
+pd.DataFrame(data, columns=['Team', 'Year'])
+
+    # team_df = teamdetails.TeamDetails(team_id=team_id)
+    # team_df.team_awards_championships.get_data_frame()
+
+
+data=[]
+champ = teamdetails.TeamDetails(team_id=1610612748)
+champ_df = champ.team_awards_championships.get_data_frame()
+champ_df
+
+years = champ_df['YEARAWARDED']
+champyears = []
+if not years.empty:
+    for year in years:
+        data.append([1610612748, year])
+
+pd.DataFrame(data)
